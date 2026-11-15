@@ -1,4 +1,104 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KI Studio</title>
+<style>
+body{font-family:Arial,sans-serif;background:#101827;color:white;margin:0;padding:20px}
+main{max-width:700px;margin:auto}
+h1{color:#67d9ff}
+.card{background:#202d42;padding:20px;border-radius:14px;margin:16px 0}
+button{background:#20b8ed;color:#07121d;border:0;border-radius:9px;padding:13px;font-weight:bold;margin:7px 5px 7px 0}
+input,textarea{box-sizing:border-box;width:100%;padding:13px;border-radius:8px;border:1px solid #63758d;background:#111d30;color:white;font-size:16px}
+textarea{height:340px;margin-top:12px}
+small{color:#b7c5d5}
+</style>
+</head>
+<body>
+<main>
+<h1>KI Studio</h1>
+<p>Dein Studio für Videoprojekte und Geschichten</p>
+
+<div class="card">
+<h2>🔧 Mechaniker</h2>
+<p>Erstelle ein Drehbuch für ein 60-Sekunden-Video.</p>
+<label for="thema">Videothema</label>
+<input id="thema" value="Autoradio mit CarPlay nachrüsten">
+<button onclick="erstellen()">Drehbuch erstellen</button>
+<button onclick="kopieren()">Drehbuch kopieren</button>
+<textarea id="ergebnis" placeholder="Hier erscheint dein Drehbuch."></textarea>
+<p id="meldung"></p>
+</div>
+
+<div class="card">
+<h2>👩‍🍳 Köchin</h2>
+<p>Rezeptvideos – nächste Ausbaustufe.</p>
+</div>
+
+<div class="card">
+<h2>🌙 Schatten der Nacht</h2>
+<p>Spannende Hörgeschichten – nächste Ausbaustufe.</p>
+</div>
+<small>Version 2 – Drehbuchvorlagen funktionieren ohne Anmeldung.</small>
+</main>
+
+<script>
+function erstellen(){
+const thema=document.getElementById("thema").value.trim();
+if(!thema){
+alert("Bitte zuerst ein Thema eingeben.");
+return;
+}
+const text=`VIDEO: ${thema}
+LÄNGE: ca. 60 Sekunden
+
+0–5 Sekunden – EINSTIEG
+Kamera: Mechaniker in moderner Werkstatt.
+Sprecher: "Heute zeige ich euch: ${thema}!"
+
+5–15 Sekunden – VORBEREITUNG
+Kamera: Benötigte Teile und Werkzeuge zeigen.
+Sprecher: "Wir prüfen zuerst das Fahrzeug und bereiten alle passenden Teile vor."
+
+15–35 Sekunden – DURCHFÜHRUNG
+Kamera: Einzelne Arbeitsschritte zeigen.
+Sprecher: "Jetzt gehen wir Schritt für Schritt vor. Achtet auf die fahrzeugspezifischen Anschlüsse und Herstellerangaben."
+
+35–50 Sekunden – KONTROLLE
+Kamera: Ergebnis und Funktionstest.
+Sprecher: "Zum Schluss prüfen wir, ob alles sicher befestigt ist und richtig funktioniert."
+
+50–60 Sekunden – ABSCHLUSS
+Kamera: Mechaniker spricht in die Kamera.
+Sprecher: "Das war unser Werkstatt-Tipp. Folgt uns für weitere Videos!"
+
+HINWEIS:
+Dies ist eine allgemeine Drehbuchvorlage.
+Technische Arbeitsschritte müssen für das konkrete Fahrzeug geprüft und ergänzt werden.`;
+document.getElementById("ergebnis").value=text;
+document.getElementById("meldung").textContent="Drehbuch erstellt.";
+}
+async function kopieren(){
+const feld=document.getElementById("ergebnis");
+if(!feld.value){
+alert("Bitte zuerst ein Drehbuch erstellen.");
+return;
+}
+try{
+await navigator.clipboard.writeText(feld.value);
+document.getElementById("meldung").textContent="Drehbuch kopiert.";
+}catch(e){
+feld.focus();
+feld.select();
+document.getElementById("meldung").textContent="Text markiert. Bitte Kopieren wählen.";
+}
+}
+</script>
+</body>
+</html>
+
 <html lang="de">
 <head>
 <meta charset="UTF-8">

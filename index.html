@@ -1,139 +1,96 @@
-<!DOCTYPE html>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KI Studio</title>
 <style>
-body{font-family:Arial,sans-serif;background:#101827;color:white;margin:0;padding:20px}
-main{max-width:700px;margin:auto}
-h1{color:#67d9ff}
-.card{background:#202d42;padding:20px;border-radius:14px;margin:16px 0}
-button{background:#20b8ed;color:#07121d;border:0;border-radius:9px;padding:13px;font-weight:bold;margin:7px 5px 7px 0}
-input,textarea{box-sizing:border-box;width:100%;padding:13px;border-radius:8px;border:1px solid #63758d;background:#111d30;color:white;font-size:16px}
-textarea{height:340px;margin-top:12px}
-small{color:#b7c5d5}
+body{font:17px system-ui;background:#111827;color:white;max-width:700px;margin:auto;padding:20px}
+section{background:#263244;padding:20px;border-radius:15px;margin:15px 0}
+input,textarea,button{box-sizing:border-box;width:100%;padding:13px;margin:8px 0;font:inherit;border-radius:9px}
+textarea{height:170px}
+button{background:#67e8f9;border:0}
+.screen{aspect-ratio:16/9;background:linear-gradient(120deg,#172554,#475569);display:flex;flex-direction:column;justify-content:center;text-align:center;padding:20px;border-radius:12px}
+small{color:#cbd5e1}
 </style>
 </head>
 <body>
-<main>
 <h1>KI Studio</h1>
-<p>Dein Studio für Videoprojekte und Geschichten</p>
-
-<div class="card">
+<section>
 <h2>🔧 Mechaniker</h2>
-<p>Erstelle ein Drehbuch für ein 60-Sekunden-Video.</p>
-<label for="thema">Videothema</label>
-<input id="thema" value="Autoradio mit CarPlay nachrüsten">
-<button onclick="erstellen()">Drehbuch erstellen</button>
-<button onclick="kopieren()">Drehbuch kopieren</button>
-<textarea id="ergebnis" placeholder="Hier erscheint dein Drehbuch."></textarea>
-<p id="meldung"></p>
+<label>Videothema</label>
+<input id="topic" value="Autoradio mit CarPlay nachrüsten">
+<button onclick="make()">Drehbuch erstellen</button>
+<textarea id="script"></textarea>
+<button onclick="copyScript()">Drehbuch kopieren</button>
+<h3>Video-Vorschau</h3>
+<div class="screen">
+<h2 id="heading">Werkstatt</h2>
+<p id="caption">Hier erscheinen die Szenen.</p>
 </div>
-
-<div class="card">
-<h2>👩‍🍳 Köchin</h2>
-<p>Rezeptvideos – nächste Ausbaustufe.</p>
-</div>
-
-<div class="card">
-<h2>🌙 Schatten der Nacht</h2>
-<p>Spannende Hörgeschichten – nächste Ausbaustufe.</p>
-</div>
-<small>Version 2 – Drehbuchvorlagen funktionieren ohne Anmeldung.</small>
-</main>
-
+<p id="count">Szene 1 von 6</p>
+<button onclick="play()">▶ Vorschau mit deutscher Stimme starten</button>
+<button onclick="stop()">■ Stoppen</button>
+<small>Testversion: Textszenen und iPhone-Sprachausgabe. Noch keine echten Bilder und kein MP4-Export.</small>
+</section>
+<section><h2>👩‍🍳 Köchin</h2>In Vorbereitung</section>
+<section><h2>🌙 Schatten der Nacht</h2>In Vorbereitung</section>
 <script>
-function erstellen(){
-const thema=document.getElementById("thema").value.trim();
-if(!thema){
-alert("Bitte zuerst ein Thema eingeben.");
-return;
+let scenes=[],pos=0,active=false,run=0;
+const el=id=>document.getElementById(id);
+function make(){
+stop();
+let t=el('topic').value.trim()||'Autoreparatur';
+scenes=[
+['Einleitung','Heute geht es um '+t+'.'],
+['Vorbereitung','Wir prüfen das Fahrzeug und legen das Werkzeug bereit.'],
+['Sicherheit','Zündung ausschalten und die Sicherheitshinweise beachten.'],
+['Prüfung','Wir prüfen die passenden Teile und Anschlüsse für das konkrete Fahrzeug.'],
+['Arbeitsschritte','Wir gehen sorgfältig vor. Keine Kabel auf Verdacht anschließen.'],
+['Abschluss','Zum Schluss testen wir die Funktion. Bei Unsicherheit hilft eine Fachwerkstatt.']
+];
+el('script').value=scenes.map((s,i)=>(i+1)+'. '+s[0]+'\n'+s[1]).join('\n\n');
+pos=0;show();
 }
-const text=`VIDEO: ${thema}
-LÄNGE: ca. 60 Sekunden
-
-0–5 Sekunden – EINSTIEG
-Kamera: Mechaniker in moderner Werkstatt.
-Sprecher: "Heute zeige ich euch: ${thema}!"
-
-5–15 Sekunden – VORBEREITUNG
-Kamera: Benötigte Teile und Werkzeuge zeigen.
-Sprecher: "Wir prüfen zuerst das Fahrzeug und bereiten alle passenden Teile vor."
-
-15–35 Sekunden – DURCHFÜHRUNG
-Kamera: Einzelne Arbeitsschritte zeigen.
-Sprecher: "Jetzt gehen wir Schritt für Schritt vor. Achtet auf die fahrzeugspezifischen Anschlüsse und Herstellerangaben."
-
-35–50 Sekunden – KONTROLLE
-Kamera: Ergebnis und Funktionstest.
-Sprecher: "Zum Schluss prüfen wir, ob alles sicher befestigt ist und richtig funktioniert."
-
-50–60 Sekunden – ABSCHLUSS
-Kamera: Mechaniker spricht in die Kamera.
-Sprecher: "Das war unser Werkstatt-Tipp. Folgt uns für weitere Videos!"
-
-HINWEIS:
-Dies ist eine allgemeine Drehbuchvorlage.
-Technische Arbeitsschritte müssen für das konkrete Fahrzeug geprüft und ergänzt werden.`;
-document.getElementById("ergebnis").value=text;
-document.getElementById("meldung").textContent="Drehbuch erstellt.";
+function show(){
+el('heading').textContent=scenes[pos][0];
+el('caption').textContent=scenes[pos][1];
+el('count').textContent='Szene '+(pos+1)+' von '+scenes.length;
 }
-async function kopieren(){
-const feld=document.getElementById("ergebnis");
-if(!feld.value){
-alert("Bitte zuerst ein Drehbuch erstellen.");
-return;
+function stop(){
+active=false;run++;
+if('speechSynthesis'in window)speechSynthesis.cancel();
 }
+function step(id){
+if(!active||id!==run)return;
+if(pos>=scenes.length){stop();return;}
+show();
+if(!('speechSynthesis'in window)){
+stop();alert('Keine Sprachausgabe verfügbar');return;
+}
+let u=new SpeechSynthesisUtterance(scenes[pos][1]);
+u.lang='de-DE';u.rate=.9;
+u.onend=u.onerror=()=>{
+if(id===run){pos++;step(id);}
+};
+speechSynthesis.speak(u);
+}
+function play(){
+make();active=true;step(run);
+}
+async function copyScript(){
 try{
-await navigator.clipboard.writeText(feld.value);
-document.getElementById("meldung").textContent="Drehbuch kopiert.";
+await navigator.clipboard.writeText(el('script').value);
+alert('Kopiert');
 }catch(e){
-feld.focus();
-feld.select();
-document.getElementById("meldung").textContent="Text markiert. Bitte Kopieren wählen.";
+el('script').select();
+alert('Text markiert. Bitte Kopieren wählen.');
 }
 }
-</script>
-</body>
-</html>
-
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KI Studio</title>
-<style>
-body{background:#101827;color:white;font-family:Arial,sans-serif;margin:0;padding:20px}
-h1{color:#60a5fa}
-.card{background:#1e293b;padding:20px;border-radius:14px;margin:15px 0}
-button{background:#2563eb;color:white;border:0;padding:14px;border-radius:9px;width:100%;margin-top:10px;font-size:16px}
-</style>
-</head>
-<body>
-<h1>KI Studio</h1>
-<p>Dein persönliches KI-Video-Studio</p>
-<div class="card">
-<h2>🔧 Autowerkstatt</h2>
-<p>KI-Mechaniker: CarPlay nachrüsten</p>
-<button onclick="start('Autowerkstatt')">Projekt öffnen</button>
-</div>
-<div class="card">
-<h2>👩‍🍳 Kochstudio</h2>
-<p>Rezeptvideos mit KI-Köchin</p>
-<button onclick="start('Kochstudio')">Projekt öffnen</button>
-</div>
-<div class="card">
-<h2>🌙 Schatten der Nacht</h2>
-<p>Gruselgeschichten und Hörgeschichten</p>
-<button onclick="start('Schatten der Nacht')">Projekt öffnen</button>
-</div>
-<p id="status">Status: Bereit</p>
-<script>
-function start(name){
-document.getElementById('status').textContent='Geöffnet: '+name;
-}
+document.addEventListener('visibilitychange',()=>{
+if(document.hidden)stop();
+});
+make();
 </script>
 </body>
 </html>
